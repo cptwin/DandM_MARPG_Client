@@ -19,11 +19,19 @@ import java.util.logging.Logger;
  */
 public class Core {
     
+    /**
+    * Constructor for the Core class
+    * @author Dajne Win
+    */
     public Core()
     {
-         sendServerCommands();
+         sendServerCommands(); //starts the class method to listen for server commands, this will be threaded in later versions
     }
     
+    /**
+    * Loop that listens for user input from the keyboard and then sends this to the server for processing
+    * @author Dajne Win
+    */
     private void sendServerCommands()
     {
         String sentence;
