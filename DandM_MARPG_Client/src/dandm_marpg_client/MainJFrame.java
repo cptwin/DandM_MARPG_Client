@@ -4,9 +4,6 @@
  */
 package dandm_marpg_client;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author Dajne Win
