@@ -4,15 +4,6 @@
  */
 package dandm_marpg_client;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author Dajne Win
@@ -25,14 +16,21 @@ public class Core {
     */
     public Core()
     {
-         sendServerCommands(); //starts the class method to listen for server commands, this will be threaded in later versions
+        startNetwork();
+    }
+    
+    private void startNetwork()
+    {
+        NetworkCommunicationThread netThread = new NetworkCommunicationThread("login cptwin 123456");
+        Thread thread = new Thread(netThread);
+        thread.start();
     }
     
     /**
     * Loop that listens for user input from the keyboard and then sends this to the server for processing
     * @author Dajne Win
     */
-    private void sendServerCommands()
+    /*private void sendServerCommands()
     {
         String sentence;
         String modifiedSentence;
@@ -51,6 +49,6 @@ public class Core {
             Logger.getLogger(Core.class.getName()).log(Level.SEVERE, null, ex);
         }
         sendServerCommands();
-    }
+    }*/
     
 }
