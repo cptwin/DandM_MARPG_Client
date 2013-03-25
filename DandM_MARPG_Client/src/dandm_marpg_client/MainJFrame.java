@@ -51,6 +51,11 @@ public class MainJFrame extends javax.swing.JFrame {
         });
 
         registerButton.setText("Register");
+        registerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                registerButtonActionPerformed(evt);
+            }
+        });
 
         resultLabel.setText("Result");
 
@@ -106,17 +111,28 @@ public class MainJFrame extends javax.swing.JFrame {
         NetworkCommunicationThread netThread = new NetworkCommunicationThread("login " + user + " " + pass);
         Thread thread = new Thread(netThread);
         thread.start();
-        while("".equals(netThread.resultFromServer))
+        while(thread.isAlive())
         {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Thread.yield();
         }
         resultLabel.setText(netThread.resultFromServer);
         // TODO add your handling code here:
     }//GEN-LAST:event_loginButtonActionPerformed
+
+    private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
+
+        String user = usernameTextField.getText();
+        String pass = new String(passwordTextField.getPassword());
+        NetworkCommunicationThread netThread = new NetworkCommunicationThread("register " + user + " " + pass);
+        Thread thread = new Thread(netThread);
+        thread.start();
+        while(thread.isAlive())
+        {
+            Thread.yield();
+        }
+        resultLabel.setText(netThread.resultFromServer);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_registerButtonActionPerformed
 
     /**
      * @param args the command line arguments
