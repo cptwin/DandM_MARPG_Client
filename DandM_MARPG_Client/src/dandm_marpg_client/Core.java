@@ -21,7 +21,7 @@ public class Core {
     
     private void startNetwork()
     {
-        NetworkCommunicationThread netThread = new NetworkCommunicationThread("login cptwin 123456");
+        NetworkCommunicationThread netThread = new NetworkCommunicationThread("");
         Thread thread = new Thread(netThread);
         thread.start();
     }
