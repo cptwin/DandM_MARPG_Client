@@ -16,15 +16,15 @@ public class Core {
     */
     public Core()
     {
-        startNetwork();
+        //startNetwork();
     }
     
-    private void startNetwork()
+    /*private void startNetwork()
     {
         NetworkCommunicationThread netThread = new NetworkCommunicationThread("");
         Thread thread = new Thread(netThread);
         thread.start();
-    }
+    }*/
     
     /**
     * Loop that listens for user input from the keyboard and then sends this to the server for processing

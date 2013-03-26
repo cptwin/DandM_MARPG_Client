@@ -4,6 +4,11 @@
  */
 package dandm_marpg_client;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
 /**
  *
  * @author Dajne Win
@@ -15,6 +20,7 @@ public class MainJFrame extends javax.swing.JFrame {
      */
     public MainJFrame() {
         initComponents();
+        this.setExtendedState(this.getExtendedState()|java.awt.Frame.MAXIMIZED_BOTH);
     }
 
     /**
@@ -113,6 +119,20 @@ public class MainJFrame extends javax.swing.JFrame {
             Thread.yield();
         }
         resultLabel.setText(netThread.resultFromServer);
+        if("You are now logged in!".equals(resultLabel.getText()))
+        {
+            usernameTextField.setVisible(false);
+            passwordTextField.setVisible(false);
+            loginButton.setVisible(false);
+            registerButton.setVisible(false);
+            resultLabel.setVisible(false);
+            jLabel1.setVisible(false);
+            jLabel2.setVisible(false);
+            javax.swing.JButton playerButton = new JButton("P");
+            playerButton.setBounds(0, 0, 50, 50);
+            add(playerButton);
+            playerButton.setVisible(true);
+        }
         // TODO add your handling code here:
     }//GEN-LAST:event_loginButtonActionPerformed
 
@@ -131,6 +151,7 @@ public class MainJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_registerButtonActionPerformed
 
+    
     /**
      * @param args the command line arguments
      */
@@ -160,10 +181,11 @@ public class MainJFrame extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new MainJFrame().setVisible(true);
             }
-        });
+        });   
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
