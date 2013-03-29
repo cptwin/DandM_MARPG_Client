@@ -4,17 +4,23 @@
  */
 package dandm_marpg_client;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.JButton;
-import javax.swing.JPanel;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 
 /**
  *
  * @author Dajne Win
  */
-public class MainJFrame extends javax.swing.JFrame {
+public class MainJFrame extends javax.swing.JFrame implements ActionListener, KeyListener {
 
+    private javax.swing.JButton moveRightButton,moveLeftButton,moveUpButton,moveDownButton,playerButton;
+    private int x,y = 0;
+    
     /**
      * Creates new form MainJFrame
      */
@@ -128,10 +134,37 @@ public class MainJFrame extends javax.swing.JFrame {
             resultLabel.setVisible(false);
             jLabel1.setVisible(false);
             jLabel2.setVisible(false);
-            javax.swing.JButton playerButton = new JButton("P");
-            playerButton.setBounds(0, 0, 50, 50);
+            playerButton = new JButton("P");
+            playerButton.setBounds(x, y, 50, 50);
             add(playerButton);
             playerButton.setVisible(true);
+            moveRightButton = new JButton("->");
+            moveRightButton.setBounds(100, 100, 50, 50);
+            add(moveRightButton);
+            moveRightButton.setVisible(true);
+            moveRightButton.addActionListener(this);
+            moveDownButton = new JButton("v");
+            moveDownButton.setBounds(75, 150, 50, 50);
+            add(moveDownButton);
+            moveDownButton.setVisible(true);
+            moveDownButton.addActionListener(this);
+            
+            moveUpButton = new JButton("^");
+            moveUpButton.setBounds(75, 50, 50, 50);
+            add(moveUpButton);
+            moveUpButton.setVisible(true);
+            moveUpButton.addActionListener(this);
+            
+            moveLeftButton = new JButton("<-");
+            moveLeftButton.setBounds(50, 100, 50, 50);
+            add(moveLeftButton);
+            moveLeftButton.setVisible(true);
+            moveLeftButton.addActionListener(this);
+            
+            KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_F1,0,true);
+            getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "Save");
+            
+            this.addKeyListener(this);
         }
         // TODO add your handling code here:
     }//GEN-LAST:event_loginButtonActionPerformed
@@ -196,4 +229,86 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel resultLabel;
     private javax.swing.JTextField usernameTextField;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == moveRightButton)
+        {
+            if ((x + 100) <= this.getSize().width)
+            {
+                x += 50;
+                playerButton.setBounds(x, y, 50, 50);
+            }
+        }
+        else if (e.getSource() == moveDownButton)
+        {
+            if ((y + 100) <= this.getSize().height)
+            {
+                y += 50;
+                playerButton.setBounds(x, y, 50, 50);
+            }
+        }
+        else if (e.getSource() == moveUpButton)
+        {
+            if ((y - 50) >= 0)
+            {
+                y += -50;
+                playerButton.setBounds(x, y, 50, 50);
+            }
+        }
+        else if (e.getSource() == moveLeftButton)
+        {
+            if ((x - 50) >= 0)
+            {
+                x += -50;
+                playerButton.setBounds(x, y, 50, 50);
+            }
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        System.out.println("Key Typed!");
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        System.out.println("Key Pressed!");
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            if ((y - 50) >= 0)
+            {
+                y += -50;
+                playerButton.setBounds(x, y, 50, 50);
+            }            
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            if ((y + 100) <= this.getSize().height)
+            {
+                y += 50;
+                playerButton.setBounds(x, y, 50, 50);
+            }            
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            if ((x - 50) >= 0)
+            {
+                x += -50;
+                playerButton.setBounds(x, y, 50, 50);
+            }            
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            if ((x + 100) <= this.getSize().width)
+            {
+                x += 50;
+                playerButton.setBounds(x, y, 50, 50);
+            }            
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        System.out.println("Key Released!");
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
