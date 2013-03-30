@@ -4,13 +4,12 @@
  */
 package dandm_marpg_client;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
 
 /**
  *
@@ -18,7 +17,7 @@ import javax.swing.KeyStroke;
  */
 public class MainJFrame extends javax.swing.JFrame implements ActionListener, KeyListener {
 
-    private javax.swing.JButton moveRightButton,moveLeftButton,moveUpButton,moveDownButton,playerButton;
+    private javax.swing.JButton playerButton;
     private int x,y = 0;
     
     /**
@@ -138,33 +137,13 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             playerButton.setBounds(x, y, 50, 50);
             add(playerButton);
             playerButton.setVisible(true);
-            moveRightButton = new JButton("->");
-            moveRightButton.setBounds(100, 100, 50, 50);
-            add(moveRightButton);
-            moveRightButton.setVisible(true);
-            moveRightButton.addActionListener(this);
-            moveDownButton = new JButton("v");
-            moveDownButton.setBounds(75, 150, 50, 50);
-            add(moveDownButton);
-            moveDownButton.setVisible(true);
-            moveDownButton.addActionListener(this);
             
-            moveUpButton = new JButton("^");
-            moveUpButton.setBounds(75, 50, 50, 50);
-            add(moveUpButton);
-            moveUpButton.setVisible(true);
-            moveUpButton.addActionListener(this);
             
-            moveLeftButton = new JButton("<-");
-            moveLeftButton.setBounds(50, 100, 50, 50);
-            add(moveLeftButton);
-            moveLeftButton.setVisible(true);
-            moveLeftButton.addActionListener(this);
-            
-            KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_F1,0,true);
-            getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "Save");
+            //KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_F1,0,true);
+            //getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "Save");
             
             this.addKeyListener(this);
+            playerButton.addKeyListener(this);
         }
         // TODO add your handling code here:
     }//GEN-LAST:event_loginButtonActionPerformed
@@ -232,38 +211,14 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == moveRightButton)
+        /*if (e.getSource() == moveRightButton)
         {
             if ((x + 100) <= this.getSize().width)
             {
                 x += 50;
                 playerButton.setBounds(x, y, 50, 50);
             }
-        }
-        else if (e.getSource() == moveDownButton)
-        {
-            if ((y + 100) <= this.getSize().height)
-            {
-                y += 50;
-                playerButton.setBounds(x, y, 50, 50);
-            }
-        }
-        else if (e.getSource() == moveUpButton)
-        {
-            if ((y - 50) >= 0)
-            {
-                y += -50;
-                playerButton.setBounds(x, y, 50, 50);
-            }
-        }
-        else if (e.getSource() == moveLeftButton)
-        {
-            if ((x - 50) >= 0)
-            {
-                x += -50;
-                playerButton.setBounds(x, y, 50, 50);
-            }
-        }
+        }*/
     }
 
     @Override
