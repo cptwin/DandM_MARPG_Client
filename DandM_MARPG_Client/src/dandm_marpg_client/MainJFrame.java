@@ -4,7 +4,6 @@
  */
 package dandm_marpg_client;
 
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -18,7 +17,7 @@ import javax.swing.JButton;
 public class MainJFrame extends javax.swing.JFrame implements ActionListener, KeyListener {
 
     private javax.swing.JButton playerButton;
-    private int x,y = 0;
+    private Player player;
     
     /**
      * Creates new form MainJFrame
@@ -126,6 +125,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
         resultLabel.setText(netThread.resultFromServer);
         if("You are now logged in!".equals(resultLabel.getText()))
         {
+            String usr = usernameTextField.getText().toLowerCase();
             usernameTextField.setVisible(false);
             passwordTextField.setVisible(false);
             loginButton.setVisible(false);
@@ -133,8 +133,11 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             resultLabel.setVisible(false);
             jLabel1.setVisible(false);
             jLabel2.setVisible(false);
+            
+            player = new Player(usr);
+            
             playerButton = new JButton("P");
-            playerButton.setBounds(x, y, 50, 50);
+            playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             add(playerButton);
             playerButton.setVisible(true);
             
@@ -180,13 +183,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
@@ -223,47 +220,60 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
 
     @Override
     public void keyTyped(KeyEvent e) {
-        System.out.println("Key Typed!");
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("Key Pressed!");
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-            if ((y - 50) >= 0)
+            if ((player.getYCoOrd() - 50) >= 0)
             {
-                y += -50;
-                playerButton.setBounds(x, y, 50, 50);
+                int set = player.getYCoOrd() - 50;
+                player.setYCoOrd(set);
+                NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd());
+                Thread thread = new Thread(netThread);
+                thread.start();
+                playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
         else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            if ((y + 100) <= this.getSize().height)
+            if ((player.getYCoOrd() + 100) <= this.getSize().height)
             {
-                y += 50;
-                playerButton.setBounds(x, y, 50, 50);
+                int set = player.getYCoOrd() + 50;
+                player.setYCoOrd(set);
+                NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd());
+                Thread thread = new Thread(netThread);
+                thread.start();
+                playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
         else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            if ((x - 50) >= 0)
+            if ((player.getXCoOrd() - 50) >= 0)
             {
-                x += -50;
-                playerButton.setBounds(x, y, 50, 50);
+                int set = player.getXCoOrd() - 50;
+                player.setXCoOrd(set);
+                NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd());
+                Thread thread = new Thread(netThread);
+                thread.start();
+                playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
         else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            if ((x + 100) <= this.getSize().width)
+            if ((player.getXCoOrd() + 100) <= this.getSize().width)
             {
-                x += 50;
-                playerButton.setBounds(x, y, 50, 50);
+                int set = player.getXCoOrd() + 50;
+                player.setXCoOrd(set);
+                NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd());
+                Thread thread = new Thread(netThread);
+                thread.start();
+                playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        System.out.println("Key Released!");
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
