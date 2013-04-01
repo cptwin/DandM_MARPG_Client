@@ -17,7 +17,7 @@ import javax.swing.JButton;
 public class MainJFrame extends javax.swing.JFrame implements ActionListener, KeyListener {
 
     private javax.swing.JButton playerButton;
-    private Player player;
+    public Player player;
     
     /**
      * Creates new form MainJFrame
@@ -115,7 +115,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
 
         String user = usernameTextField.getText();
         String pass = new String(passwordTextField.getPassword());
-        NetworkCommunicationThread netThread = new NetworkCommunicationThread("login " + user + " " + pass);
+        NetworkCommunicationThread netThread = new NetworkCommunicationThread("login " + user + " " + pass, this);
         Thread thread = new Thread(netThread);
         thread.start();
         while(thread.isAlive())
@@ -123,39 +123,45 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             Thread.yield();
         }
         resultLabel.setText(netThread.resultFromServer);
-        if("You are now logged in!".equals(resultLabel.getText()))
-        {
-            String usr = usernameTextField.getText().toLowerCase();
-            usernameTextField.setVisible(false);
-            passwordTextField.setVisible(false);
-            loginButton.setVisible(false);
-            registerButton.setVisible(false);
-            resultLabel.setVisible(false);
-            jLabel1.setVisible(false);
-            jLabel2.setVisible(false);
-            
-            player = new Player(usr);
-            
-            playerButton = new JButton("P");
-            playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
-            add(playerButton);
-            playerButton.setVisible(true);
-            
-            
-            //KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_F1,0,true);
-            //getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "Save");
-            
-            this.addKeyListener(this);
-            playerButton.addKeyListener(this);
-        }
         // TODO add your handling code here:
     }//GEN-LAST:event_loginButtonActionPerformed
 
+    public void setupLoginForm(boolean bool)
+    {
+        usernameTextField.setVisible(bool);
+        passwordTextField.setVisible(bool);
+        loginButton.setVisible(bool);
+        registerButton.setVisible(bool);
+        resultLabel.setVisible(bool);
+        jLabel1.setVisible(bool);
+        jLabel2.setVisible(bool);
+    }
+    
+    public void setupPlayerForm(boolean bool)
+    {
+        if (bool)
+        {
+            playerButton = new JButton("P");
+            player.setXCoOrd(0);
+            player.setYCoOrd(0);
+            playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
+            add(playerButton);
+            playerButton.setVisible(true);
+            this.addKeyListener(this);
+            playerButton.addKeyListener(this);
+        }
+        else
+        {
+            playerButton.setVisible(false);
+            playerButton = null;
+        }
+    }
+    
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
 
         String user = usernameTextField.getText();
         String pass = new String(passwordTextField.getPassword());
-        NetworkCommunicationThread netThread = new NetworkCommunicationThread("register " + user + " " + pass);
+        NetworkCommunicationThread netThread = new NetworkCommunicationThread("register " + user + " " + pass, this);
         Thread thread = new Thread(netThread);
         thread.start();
         while(thread.isAlive())
@@ -231,9 +237,13 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             {
                 int set = player.getYCoOrd() - 50;
                 player.setYCoOrd(set);
-                NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd());
+                NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
+                if (!player.isPlayerLoggedIn())
+                {
+                    setupLoginForm(true);
+                }
                 playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
@@ -242,9 +252,13 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             {
                 int set = player.getYCoOrd() + 50;
                 player.setYCoOrd(set);
-                NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd());
+                NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
+                if (!player.isPlayerLoggedIn())
+                {
+                    setupLoginForm(true);
+                }
                 playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
@@ -253,9 +267,13 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             {
                 int set = player.getXCoOrd() - 50;
                 player.setXCoOrd(set);
-                NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd());
+                NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
+                if (!player.isPlayerLoggedIn())
+                {
+                    setupLoginForm(true);
+                }
                 playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
@@ -264,9 +282,13 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             {
                 int set = player.getXCoOrd() + 50;
                 player.setXCoOrd(set);
-                NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd());
+                NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
+                if (!player.isPlayerLoggedIn())
+                {
+                    setupLoginForm(true);
+                }
                 playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }

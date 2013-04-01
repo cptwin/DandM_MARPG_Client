@@ -16,6 +16,7 @@ public class Player extends Entity {
     private static int y;
     private static int currentHealth;
     private static Socket socket;
+    private boolean loggedIn;
     
     public Player(String name)
     {
@@ -53,6 +54,16 @@ public class Player extends Entity {
     public int getCurrentHealth()
     {
         return currentHealth;
+    }
+    
+    public void setLoggedIn(boolean bool)
+    {
+        loggedIn = bool;
+    }
+    
+    public boolean isPlayerLoggedIn()
+    {
+        return loggedIn;
     }
     
 }

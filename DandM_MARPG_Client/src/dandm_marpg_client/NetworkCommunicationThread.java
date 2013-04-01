@@ -21,9 +21,11 @@ public class NetworkCommunicationThread implements Runnable {
     
     private String commandOutToServer;
     public String resultFromServer = "";
+    private MainJFrame mainJFrame;
     
-    public NetworkCommunicationThread(String commandToSend)
+    public NetworkCommunicationThread(String commandToSend, MainJFrame mainFrame)
     {
+        this.mainJFrame = mainFrame;
         this.commandOutToServer = commandToSend;
     }
 
@@ -35,8 +37,21 @@ public class NetworkCommunicationThread implements Runnable {
             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             outToServer.writeBytes(commandOutToServer + '\n');
             resultFromServer = inFromServer.readLine();
-
-            System.out.println(resultFromServer);
+            switch (resultFromServer) {
+                case "You are now logged in!":
+                    String[] str_array = commandOutToServer.split(" ");
+                    mainJFrame.player = new Player(str_array[1]);
+                    mainJFrame.player.setLoggedIn(true);
+                    mainJFrame.setupLoginForm(false);
+                    mainJFrame.setupPlayerForm(true);
+                    break;
+                
+                case "Timed Out!":
+                    mainJFrame.player.setLoggedIn(false);
+                    mainJFrame.setupLoginForm(true);
+                    mainJFrame.setupPlayerForm(false);
+                    break;
+            }
         }
         catch (UnknownHostException ex) {
             Logger.getLogger(Core.class.getName()).log(Level.SEVERE, null, ex);
