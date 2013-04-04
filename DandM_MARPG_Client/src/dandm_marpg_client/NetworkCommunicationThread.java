@@ -52,6 +52,20 @@ public class NetworkCommunicationThread implements Runnable {
                     mainJFrame.setupPlayerForm(false);
                     break;
             }
+            if(resultFromServer.startsWith("otherplayers"))
+            {
+                String str = resultFromServer.replace("otherplayers", "");
+                String[] str_array = str.split(" ");
+                for (int i = 0; i < str_array.length; i++)
+                {
+                    String[] player_array = str_array[i].split("/");
+                    Player player = new Player(player_array[0]);
+                    player.setXCoOrd(Integer.parseInt(player_array[1]));
+                    player.setYCoOrd(Integer.parseInt(player_array[2]));
+                    mainJFrame.entities.add(player);
+                    mainJFrame.createPlayerButtons();
+                }
+            }
         }
         catch (UnknownHostException ex) {
             Logger.getLogger(Core.class.getName()).log(Level.SEVERE, null, ex);

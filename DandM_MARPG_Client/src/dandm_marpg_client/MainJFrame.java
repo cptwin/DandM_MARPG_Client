@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashSet;
 import javax.swing.JButton;
 
 /**
@@ -18,12 +19,14 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
 
     private javax.swing.JButton playerButton;
     public Player player;
+    public HashSet<Entity> entities;
     
     /**
      * Creates new form MainJFrame
      */
     public MainJFrame() {
         initComponents();
+        entities = new HashSet();
         this.setExtendedState(this.getExtendedState()|java.awt.Frame.MAXIMIZED_BOTH);
     }
 
@@ -126,6 +129,24 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
         // TODO add your handling code here:
     }//GEN-LAST:event_loginButtonActionPerformed
 
+    public synchronized void createPlayerButtons()
+    {
+        for(Entity e : entities)
+        {
+            if (e instanceof Player)
+            {
+                Player otherPlayer = (Player)e;
+                if (!player.getName().toLowerCase().equals(otherPlayer.getName().toLowerCase()))
+                {
+                    javax.swing.JButton otherPlayerButton = new JButton(otherPlayer.getName());
+                    otherPlayerButton.setBounds(otherPlayer.getXCoOrd(), otherPlayer.getYCoOrd(), 50, 50);
+                    add(otherPlayerButton);
+                    otherPlayerButton.setVisible(true);
+                }
+            }
+        }
+    }
+    
     public void setupLoginForm(boolean bool)
     {
         usernameTextField.setVisible(bool);
@@ -240,6 +261,9 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                 NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
+                NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
+                Thread threadOtherPlayers = new Thread(netThreadOtherPlayers);
+                threadOtherPlayers.start();
                 if (!player.isPlayerLoggedIn())
                 {
                     setupLoginForm(true);
@@ -255,6 +279,9 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                 NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
+                NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
+                Thread threadOtherPlayers = new Thread(netThreadOtherPlayers);
+                threadOtherPlayers.start();
                 if (!player.isPlayerLoggedIn())
                 {
                     setupLoginForm(true);
@@ -270,6 +297,9 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                 NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
+                NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
+                Thread threadOtherPlayers = new Thread(netThreadOtherPlayers);
+                threadOtherPlayers.start();
                 if (!player.isPlayerLoggedIn())
                 {
                     setupLoginForm(true);
@@ -285,6 +315,9 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                 NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
+                NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
+                Thread threadOtherPlayers = new Thread(netThreadOtherPlayers);
+                threadOtherPlayers.start();
                 if (!player.isPlayerLoggedIn())
                 {
                     setupLoginForm(true);
