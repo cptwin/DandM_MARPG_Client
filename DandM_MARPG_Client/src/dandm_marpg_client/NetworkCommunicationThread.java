@@ -10,8 +10,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 
 /**
  *
@@ -40,7 +43,9 @@ public class NetworkCommunicationThread implements Runnable {
             switch (resultFromServer) {
                 case "You are now logged in!":
                     String[] str_array = commandOutToServer.split(" ");
-                    mainJFrame.player = new Player(str_array[1]);
+                    mainJFrame.player = new Player(str_array[1], new JButton(str_array[1]));
+                    mainJFrame.add(mainJFrame.player.button);
+                    mainJFrame.entities.add(mainJFrame.player);
                     mainJFrame.player.setLoggedIn(true);
                     mainJFrame.setupLoginForm(false);
                     mainJFrame.setupPlayerForm(true);
@@ -59,12 +64,51 @@ public class NetworkCommunicationThread implements Runnable {
                 for (int i = 0; i < str_array.length; i++)
                 {
                     String[] player_array = str_array[i].split("/");
-                    Player player = new Player(player_array[0]);
-                    player.setXCoOrd(Integer.parseInt(player_array[1]));
-                    player.setYCoOrd(Integer.parseInt(player_array[2]));
-                    mainJFrame.entities.add(player);
-                    mainJFrame.createPlayerButtons();
+                    if(!mainJFrame.player.getName().toLowerCase().equals(player_array[0].toLowerCase()))
+                    {
+                        Player playerz = new Player(player_array[0], new JButton(player_array[0]));
+                        mainJFrame.add(playerz.button);
+                        playerz.setXCoOrd(Integer.parseInt(player_array[1]));
+                        playerz.setYCoOrd(Integer.parseInt(player_array[2]));
+                        mainJFrame.entities.add(playerz);
+                    }
                 }
+                mainJFrame.createPlayerButtons();
+            }
+            else if(resultFromServer.startsWith("move"))
+            {
+                HashSet<Entity> entities = new HashSet<>();
+                String[] movementArray = resultFromServer.split("%");
+                movementArray[0] = movementArray[0].replaceFirst("move", "");
+                String[] str_array = movementArray[0].split("/");
+                mainJFrame.player.setXCoOrd(Integer.parseInt(str_array[1]));
+                mainJFrame.player.setYCoOrd(Integer.parseInt(str_array[2]));
+                for(int i = 1; i < movementArray.length; i++)
+                {
+                    boolean addPlayerToSet = true;
+                    str_array = movementArray[i].split("/");
+                    Entity[] ents = new Entity[mainJFrame.entities.size()];
+                    mainJFrame.entities.toArray(ents);
+                    for(Entity e : ents)
+                    {
+                        str_array[0] = str_array[0].replaceFirst("otherplayer", "");
+                        if(e.getName().equals(str_array[0]))
+                        {
+                            addPlayerToSet = false;
+                            Player player = (Player)e;
+                            player.setXCoOrd(Integer.parseInt(str_array[1]));
+                            player.setYCoOrd(Integer.parseInt(str_array[2]));
+                        }
+                    }
+                    if(addPlayerToSet)
+                    {
+                        Player oPlayer = new Player(str_array[0], new JButton(str_array[0]));
+                        mainJFrame.add(oPlayer.button);
+                        entities.add(oPlayer);
+                    }
+                }
+                mainJFrame.entities.addAll(entities);
+                mainJFrame.createPlayerButtons();
             }
         }
         catch (UnknownHostException ex) {

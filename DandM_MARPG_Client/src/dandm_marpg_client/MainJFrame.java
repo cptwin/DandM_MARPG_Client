@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashSet;
-import javax.swing.JButton;
 
 /**
  *
@@ -17,7 +16,6 @@ import javax.swing.JButton;
  */
 public class MainJFrame extends javax.swing.JFrame implements ActionListener, KeyListener {
 
-    private javax.swing.JButton playerButton;
     public Player player;
     public HashSet<Entity> entities;
     
@@ -26,7 +24,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
      */
     public MainJFrame() {
         initComponents();
-        entities = new HashSet();
+        entities = new HashSet<>();
         this.setExtendedState(this.getExtendedState()|java.awt.Frame.MAXIMIZED_BOTH);
     }
 
@@ -135,14 +133,17 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
         {
             if (e instanceof Player)
             {
-                Player otherPlayer = (Player)e;
-                if (!player.getName().toLowerCase().equals(otherPlayer.getName().toLowerCase()))
+                Player playerz = (Player)e;
+                System.out.println(playerz.getName() + " X: " + playerz.getXCoOrd() + " Y: " + playerz.getYCoOrd());
+                playerz.button.setBounds(playerz.getXCoOrd(), playerz.getYCoOrd(), 50, 50);
+                if(playerz.addedButton == false)
                 {
-                    javax.swing.JButton otherPlayerButton = new JButton(otherPlayer.getName());
-                    otherPlayerButton.setBounds(otherPlayer.getXCoOrd(), otherPlayer.getYCoOrd(), 50, 50);
-                    add(otherPlayerButton);
-                    otherPlayerButton.setVisible(true);
+                    add(playerz.button);
+                    playerz.button.setVisible(true);
+                    playerz.addedButton = true;
                 }
+                playerz.button.revalidate();
+                playerz.button.repaint();
             }
         }
     }
@@ -162,19 +163,24 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
     {
         if (bool)
         {
-            playerButton = new JButton("P");
-            player.setXCoOrd(0);
-            player.setYCoOrd(0);
-            playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
-            add(playerButton);
-            playerButton.setVisible(true);
-            this.addKeyListener(this);
-            playerButton.addKeyListener(this);
+            NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
+            Thread thread = new Thread(netThread);
+            thread.start();
+            while(thread.isAlive())
+            {
+                Thread.yield();
+            }
+            createPlayerButtons();
+            //playerButton = new JButton("P");
+            //player.button.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
+            //player.button.setVisible(true);
+            //this.addKeyListener(this);
+            player.button.addKeyListener(this);
         }
         else
         {
-            playerButton.setVisible(false);
-            playerButton = null;
+            player.button.setVisible(false);
+            player.button = null;
         }
     }
     
@@ -261,14 +267,18 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                 NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
-                NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
+                while(thread.isAlive())
+                {
+                    Thread.yield();
+                }
+                /*NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
                 Thread threadOtherPlayers = new Thread(netThreadOtherPlayers);
-                threadOtherPlayers.start();
+                threadOtherPlayers.start();*/
                 if (!player.isPlayerLoggedIn())
                 {
                     setupLoginForm(true);
                 }
-                playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
+                //playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
         else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
@@ -279,14 +289,18 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                 NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
-                NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
+                while(thread.isAlive())
+                {
+                    Thread.yield();
+                }
+                /*NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
                 Thread threadOtherPlayers = new Thread(netThreadOtherPlayers);
-                threadOtherPlayers.start();
+                threadOtherPlayers.start();*/
                 if (!player.isPlayerLoggedIn())
                 {
                     setupLoginForm(true);
                 }
-                playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
+                //playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
         else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
@@ -297,14 +311,18 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                 NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
-                NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
+                while(thread.isAlive())
+                {
+                    Thread.yield();
+                }
+                /*NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
                 Thread threadOtherPlayers = new Thread(netThreadOtherPlayers);
-                threadOtherPlayers.start();
+                threadOtherPlayers.start();*/
                 if (!player.isPlayerLoggedIn())
                 {
                     setupLoginForm(true);
                 }
-                playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
+                //playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
         else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
@@ -315,14 +333,18 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                 NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
-                NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
+                while(thread.isAlive())
+                {
+                    Thread.yield();
+                }
+                /*NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
                 Thread threadOtherPlayers = new Thread(netThreadOtherPlayers);
-                threadOtherPlayers.start();
+                threadOtherPlayers.start();*/
                 if (!player.isPlayerLoggedIn())
                 {
                     setupLoginForm(true);
                 }
-                playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
+                //playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
     }

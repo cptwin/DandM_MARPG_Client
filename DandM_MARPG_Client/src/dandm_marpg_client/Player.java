@@ -12,15 +12,20 @@ import java.net.Socket;
  */
 public class Player extends Entity {
     
-    private static int x;
-    private static int y;
-    private static int currentHealth;
+    private int x;
+    private int y;
+    private int currentHealth;
     private static Socket socket;
     private boolean loggedIn;
+    public javax.swing.JButton button;
+    public boolean addedButton;
     
-    public Player(String name)
+    public Player(String name, javax.swing.JButton pButton)
     {
         super(name);
+        button = pButton;
+        button.setVisible(true);
+        addedButton = false;
         x = 0;
         y = 0;
         currentHealth = 100;
