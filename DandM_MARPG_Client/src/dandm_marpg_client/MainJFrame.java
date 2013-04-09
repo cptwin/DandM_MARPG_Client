@@ -44,6 +44,8 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
         loginButton = new javax.swing.JButton();
         registerButton = new javax.swing.JButton();
         resultLabel = new javax.swing.JLabel();
+        jTxtServerIp = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -67,6 +69,15 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
 
         resultLabel.setText("Result");
 
+        jTxtServerIp.setText("127.0.0.1");
+        jTxtServerIp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTxtServerIpActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Server IP");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -74,20 +85,21 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(resultLabel)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(usernameTextField)
-                            .addComponent(passwordTextField)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(resultLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 214, Short.MAX_VALUE)
+                        .addGap(0, 184, Short.MAX_VALUE)
                         .addComponent(registerButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(loginButton)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(loginButton))
+                    .addComponent(usernameTextField)
+                    .addComponent(passwordTextField)
+                    .addComponent(jTxtServerIp))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -103,10 +115,15 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                     .addComponent(passwordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(loginButton)
-                    .addComponent(registerButton)
-                    .addComponent(resultLabel))
-                .addContainerGap(214, Short.MAX_VALUE))
+                    .addComponent(jTxtServerIp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addGap(16, 16, 16)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(resultLabel)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(registerButton)
+                        .addComponent(loginButton)))
+                .addContainerGap(178, Short.MAX_VALUE))
         );
 
         pack();
@@ -157,6 +174,8 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
         resultLabel.setVisible(bool);
         jLabel1.setVisible(bool);
         jLabel2.setVisible(bool);
+        jTxtServerIp.setVisible(bool);
+        jLabel3.setVisible(bool);
     }
     
     public void setupPlayerForm(boolean bool)
@@ -199,6 +218,10 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
         // TODO add your handling code here:
     }//GEN-LAST:event_registerButtonActionPerformed
 
+    private void jTxtServerIpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTxtServerIpActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTxtServerIpActionPerformed
+
     
     /**
      * @param args the command line arguments
@@ -232,6 +255,8 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    public javax.swing.JTextField jTxtServerIp;
     private javax.swing.JButton loginButton;
     private javax.swing.JPasswordField passwordTextField;
     private javax.swing.JButton registerButton;

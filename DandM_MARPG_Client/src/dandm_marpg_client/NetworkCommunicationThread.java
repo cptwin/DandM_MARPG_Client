@@ -25,6 +25,7 @@ public class NetworkCommunicationThread implements Runnable {
     private String commandOutToServer;
     public String resultFromServer = "";
     private MainJFrame mainJFrame;
+    private String serverIp = "";
     
     public NetworkCommunicationThread(String commandToSend, MainJFrame mainFrame)
     {
@@ -34,8 +35,10 @@ public class NetworkCommunicationThread implements Runnable {
 
     @Override
     public void run() {
+        serverIp = mainJFrame.jTxtServerIp.getText();
+        
         BufferedReader inFromUser = new BufferedReader( new InputStreamReader(System.in));
-        try (Socket clientSocket = new Socket("127.0.0.1", 6789)) {
+        try (Socket clientSocket = new Socket(serverIp, 6789)) {
             DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             outToServer.writeBytes(commandOutToServer + '\n');
