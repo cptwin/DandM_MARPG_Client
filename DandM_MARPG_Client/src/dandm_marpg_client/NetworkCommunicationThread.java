@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -60,25 +59,7 @@ public class NetworkCommunicationThread implements Runnable {
                     mainJFrame.setupPlayerForm(false);
                     break;
             }
-            if(resultFromServer.startsWith("otherplayers"))
-            {
-                String str = resultFromServer.replace("otherplayers", "");
-                String[] str_array = str.split(" ");
-                for (int i = 0; i < str_array.length; i++)
-                {
-                    String[] player_array = str_array[i].split("/");
-                    if(!mainJFrame.player.getName().toLowerCase().equals(player_array[0].toLowerCase()))
-                    {
-                        Player playerz = new Player(player_array[0], new JButton(player_array[0]));
-                        mainJFrame.add(playerz.button);
-                        playerz.setXCoOrd(Integer.parseInt(player_array[1]));
-                        playerz.setYCoOrd(Integer.parseInt(player_array[2]));
-                        mainJFrame.entities.add(playerz);
-                    }
-                }
-                mainJFrame.createPlayerButtons();
-            }
-            else if(resultFromServer.startsWith("move"))
+            if(resultFromServer.startsWith("move"))
             {
                 HashSet<Entity> entities = new HashSet<>();
                 String[] movementArray = resultFromServer.split("%");

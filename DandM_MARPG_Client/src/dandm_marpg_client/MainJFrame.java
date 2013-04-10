@@ -8,16 +8,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.HashSet;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JButton;
 
 /**
  *
  * @author Dajne Win
  */
-public class MainJFrame extends javax.swing.JFrame implements ActionListener, KeyListener {
+public class MainJFrame extends javax.swing.JFrame implements ActionListener, KeyListener, MouseListener {
 
     public Player player;
     public HashSet<Entity> entities;
+    ScheduledExecutorService threadPool;
+    private int timeoutMilliseconds = 500;
+    private long timeStamp;
     
     /**
      * Creates new form MainJFrame
@@ -25,6 +36,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
     public MainJFrame() {
         initComponents();
         entities = new HashSet<>();
+        threadPool = Executors.newScheduledThreadPool(5);
         this.setExtendedState(this.getExtendedState()|java.awt.Frame.MAXIMIZED_BOTH);
     }
 
@@ -146,6 +158,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
 
     public synchronized void createPlayerButtons()
     {
+        HashSet<Entity> thingsToRemove = new HashSet<>();
         for(Entity e : entities)
         {
             if (e instanceof Player)
@@ -162,6 +175,28 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                 playerz.button.revalidate();
                 playerz.button.repaint();
             }
+            if (e instanceof Bullet)
+            {
+                Bullet bullet = (Bullet)e;
+                if(bullet.finishedMoving)
+                {
+                    bullet.button.setVisible(false);
+                    thingsToRemove.add(e);
+                }
+                if(bullet.addedButton == false)
+                {
+                    add(bullet.button);
+                    bullet.button.setVisible(true);
+                    bullet.addedButton = true;
+                }
+                bullet.move();
+                bullet.button.revalidate();
+                bullet.button.repaint();
+            }
+        }
+        for(Entity e : thingsToRemove)
+        {
+            entities.remove(e);
         }
     }
     
@@ -182,13 +217,16 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
     {
         if (bool)
         {
-            NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
+            addMouseListener(this);
+            timeStamp = System.currentTimeMillis();
+            threadPool.scheduleAtFixedRate(new NetworkCommunicationThread("ping " + player.getName(), this), 0, 20, TimeUnit.SECONDS);
+            /*NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
             Thread thread = new Thread(netThread);
             thread.start();
             while(thread.isAlive())
             {
                 Thread.yield();
-            }
+            }*/
             createPlayerButtons();
             //playerButton = new JButton("P");
             //player.button.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
@@ -377,5 +415,36 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
     @Override
     public void keyReleased(KeyEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if(entities.size() > 0 && (System.currentTimeMillis() > (timeStamp + timeoutMilliseconds)))
+        {
+            timeStamp = System.currentTimeMillis();
+            Bullet bullet = new Bullet("bullet", new JButton("."),player,player.getXCoOrd(),player.getYCoOrd(),e.getX(),e.getY());
+            entities.add(bullet);
+            createPlayerButtons();
+        }        
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        
     }
 }
