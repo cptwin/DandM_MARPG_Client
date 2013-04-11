@@ -93,6 +93,11 @@ public class NetworkCommunicationThread implements Runnable {
                 }
                 mainJFrame.entities.addAll(entities);
                 mainJFrame.createPlayerButtons();
+                
+            } else if (resultFromServer.startsWith("chat")) {
+                String[] chatArray = resultFromServer.split("//");                
+                mainJFrame.txtChatBox.append(chatArray[1] + ": " + chatArray[2] + "\n");
+                
             }
         }
         catch (UnknownHostException ex) {
