@@ -38,7 +38,8 @@ public class Bullet extends Entity {
         if(x != finalX && y != finalY)
         {
             x = (int)(x + (gradient * (finalX - x)));
-            y = (int)(y + (gradient * (finalX - y)));
+            y = (int)(y + (gradient * (finalY - y)));
+            System.out.println(x + " " + y);
             button.setBounds(x, y, 10, 10);
             gradient += 0.1;
         }
