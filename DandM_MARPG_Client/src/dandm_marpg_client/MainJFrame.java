@@ -226,7 +226,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
         }
         resultLabel.setText(netThread.resultFromServer);
         drawPanel.repaint();
-        NetworkCommunicationThread chatThread = new NetworkCommunicationThread("chat" + player.getName() + "::", this);
+        NetworkChatThread chatThread = new NetworkChatThread("chat" + player.getName() + "::", this);
         Thread cThread = new Thread(chatThread);
         cThread.start();
         // TODO add your handling code here:
@@ -365,7 +365,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
         // TODO add your handling code here:
         String chatMessage = txtMessage.getText();
         txtMessage.setText("");
-        NetworkCommunicationThread chatThread = new NetworkCommunicationThread("chat" + player.getName() + "::" + chatMessage, this);
+        NetworkChatThread chatThread = new NetworkChatThread("chat" + player.getName() + "::" + chatMessage, this);
         Thread cThread = new Thread(chatThread);
         cThread.start();
         /*NetworkCommunicationThread netThread = new NetworkCommunicationThread("chat//" + player.getName() + "//" + chatMessage, this);
