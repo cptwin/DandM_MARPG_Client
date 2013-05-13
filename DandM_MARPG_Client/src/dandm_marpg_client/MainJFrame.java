@@ -27,6 +27,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
     DrawPanel drawPanel;
     public Player player;
     public HashSet<Entity> entities;
+    public HashSet<String> chatLog;
     ScheduledExecutorService threadPool;
     private int timeoutMilliseconds = 500;
     private long timeStamp;
@@ -37,6 +38,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
     public MainJFrame() {
         initComponents();
         entities = new HashSet<>();
+        chatLog = new HashSet<>();
         threadPool = Executors.newScheduledThreadPool(5);
         drawPanel = new DrawPanel(this);
         ActionListener listener = new DrawPanel(this);
@@ -223,7 +225,10 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             Thread.yield();
         }
         resultLabel.setText(netThread.resultFromServer);
-         drawPanel.repaint();
+        drawPanel.repaint();
+        NetworkCommunicationThread chatThread = new NetworkCommunicationThread("chat" + player.getName() + "::", this);
+        Thread cThread = new Thread(chatThread);
+        cThread.start();
         // TODO add your handling code here:
     }//GEN-LAST:event_loginButtonActionPerformed
 
@@ -271,6 +276,11 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             for (Entity e : thingsToRemove) {
                 entities.remove(e);
             }
+            for(String s : chatLog)
+            {
+                txtChatBox.append(s + "\n");
+            }
+            chatLog.clear();
         }
     }
     
@@ -287,49 +297,6 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             playerz.button.repaint();
         }
         
-    }
-    
-    public synchronized void createPlayerButtons()
-    {
-        /*HashSet<Entity> thingsToRemove = new HashSet<>();
-        for(Entity e : entities)
-        {
-            if (e instanceof Player)
-            {
-                Player playerz = (Player)e;
-                playerz.button.setBounds(playerz.getXCoOrd(), playerz.getYCoOrd(), 50, 50);
-                if(playerz.addedButton == false)
-                {
-                    add(playerz.button);
-                    playerz.button.setVisible(true);
-                    playerz.addedButton = true;
-                }
-                playerz.button.revalidate();
-                playerz.button.repaint();
-            }
-            if (e instanceof Bullet)
-            {
-                Bullet bullet = (Bullet)e;
-                if(bullet.finishedMoving)
-                {
-                    bullet.button.setVisible(false);
-                    thingsToRemove.add(e);
-                }
-                if(bullet.addedButton == false)
-                {
-                    add(bullet.button);
-                    bullet.button.setVisible(true);
-                    bullet.addedButton = true;
-                }
-                bullet.move();
-                bullet.button.revalidate();
-                bullet.button.repaint();
-            }
-        }
-        for(Entity e : thingsToRemove)
-        {
-            entities.remove(e);
-        }*/
     }
     
     public void setupLoginForm(boolean bool)
@@ -365,18 +332,6 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             timeStamp = System.currentTimeMillis();
             threadPool.scheduleAtFixedRate(new NetworkCommunicationThread("ping " + player.getName(), this), 0, 20, TimeUnit.SECONDS);
             threadPool.scheduleAtFixedRate(new NetworkCommunicationThread("movingentities " + player.getName(), this), 0, 30, TimeUnit.MILLISECONDS);
-            /*NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
-            Thread thread = new Thread(netThread);
-            thread.start();
-            while(thread.isAlive())
-            {
-                Thread.yield();
-            }*/
-            createPlayerButtons();
-            //playerButton = new JButton("P");
-            //player.button.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
-            //player.button.setVisible(true);
-            //this.addKeyListener(this);
             player.button.addKeyListener(this);
         }
         else
@@ -410,19 +365,20 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
         // TODO add your handling code here:
         String chatMessage = txtMessage.getText();
         txtMessage.setText("");
-        NetworkCommunicationThread netThread = new NetworkCommunicationThread("chat//" + player.getName() + "//" + chatMessage, this);
+        NetworkCommunicationThread chatThread = new NetworkCommunicationThread("chat" + player.getName() + "::" + chatMessage, this);
+        Thread cThread = new Thread(chatThread);
+        cThread.start();
+        /*NetworkCommunicationThread netThread = new NetworkCommunicationThread("chat//" + player.getName() + "//" + chatMessage, this);
         Thread thread = new Thread(netThread);
         thread.start();
         while(thread.isAlive())
         {
             Thread.yield();
-        }
+        }*/
          drawPanel.repaint();
-        
-        
-        
     }//GEN-LAST:event_btnSendActionPerformed
 
+    
     private void txtMessageKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMessageKeyPressed
         // TODO add your handling code here:
         if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -582,7 +538,6 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             timeStamp = System.currentTimeMillis();
             Bullet bullet = new Bullet("bullet", new JButton("."),player,player.getXCoOrd(),player.getYCoOrd(),e.getX(),e.getY());
             entities.add(bullet);
-            createPlayerButtons();
         }
          drawPanel.repaint();
     }

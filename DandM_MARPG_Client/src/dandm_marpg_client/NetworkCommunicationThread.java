@@ -97,6 +97,15 @@ public class NetworkCommunicationThread implements Runnable {
                     mainJFrame.drawPanel.repaint();
                     mainJFrame.drawPanel.revalidate();
                 }
+                if(resultFromServer.startsWith("rchat"))
+                {
+                    System.out.println(resultFromServer);
+                    resultFromServer = resultFromServer.replaceFirst("rchat", "");
+                    System.out.println(resultFromServer);
+                    mainJFrame.chatLog.add(resultFromServer);
+                    mainJFrame.drawPanel.repaint();
+                    mainJFrame.drawPanel.revalidate();
+                }
             }
             catch (UnknownHostException ex) {
                 Logger.getLogger(Core.class.getName()).log(Level.SEVERE, null, ex);
