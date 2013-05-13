@@ -14,9 +14,9 @@ import java.util.HashSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.Timer;
 
 /**
  *
@@ -24,6 +24,7 @@ import javax.swing.JButton;
  */
 public class MainJFrame extends javax.swing.JFrame implements ActionListener, KeyListener, MouseListener {
 
+    DrawPanel drawPanel;
     public Player player;
     public HashSet<Entity> entities;
     ScheduledExecutorService threadPool;
@@ -37,6 +38,10 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
         initComponents();
         entities = new HashSet<>();
         threadPool = Executors.newScheduledThreadPool(5);
+        drawPanel = new DrawPanel(this);
+        ActionListener listener = new DrawPanel(this);
+        Timer t = new Timer(10, listener);
+        t.start();
         this.setExtendedState(this.getExtendedState()|java.awt.Frame.MAXIMIZED_BOTH);
     }
 
@@ -218,18 +223,80 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             Thread.yield();
         }
         resultLabel.setText(netThread.resultFromServer);
+         drawPanel.repaint();
         // TODO add your handling code here:
     }//GEN-LAST:event_loginButtonActionPerformed
 
+    class DrawPanel extends JFrame implements ActionListener {
+        
+        private MainJFrame mainJFrame;
+        
+        public DrawPanel(MainJFrame jFrame)
+        {
+            mainJFrame = jFrame;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            HashSet<Entity> thingsToRemove = new HashSet<>();
+            for (Entity e : entities) {
+                if (e instanceof Player) {
+                    Player playerz = (Player) e;
+                    if (playerz.addedButton == false) {
+                        mainJFrame.add(playerz.button);
+                        playerz.addedButton = true;
+                        mainJFrame.drawButtons(playerz, true);
+                    }
+                    else
+                    {
+                        mainJFrame.drawButtons(playerz, true);
+                    }
+                }
+                if (e instanceof Bullet) {
+                    Bullet bullet = (Bullet) e;
+                    if (bullet.finishedMoving) {
+                        bullet.button.setVisible(false);
+                        thingsToRemove.add(e);
+                    }
+                    if (bullet.addedButton == false) {
+                        mainJFrame.add(bullet.button);
+                        bullet.button.setVisible(true);
+                        bullet.addedButton = true;
+                    }
+                    bullet.move();
+                    bullet.button.revalidate();
+                    bullet.button.repaint();
+                }
+            }
+            for (Entity e : thingsToRemove) {
+                entities.remove(e);
+            }
+        }
+    }
+    
+    public synchronized void drawButtons(Entity e, boolean visible)
+    {
+        if (e instanceof Player) {
+            Player playerz = (Player) e;
+            playerz.button.setBounds(playerz.getXCoOrd(), playerz.getYCoOrd(), 50, 50);
+            if(!playerz.button.isVisible())
+            {
+                playerz.button.setVisible(visible);
+            }
+            playerz.button.revalidate();
+            playerz.button.repaint();
+        }
+        
+    }
+    
     public synchronized void createPlayerButtons()
     {
-        HashSet<Entity> thingsToRemove = new HashSet<>();
+        /*HashSet<Entity> thingsToRemove = new HashSet<>();
         for(Entity e : entities)
         {
             if (e instanceof Player)
             {
                 Player playerz = (Player)e;
-                System.out.println(playerz.getName() + " X: " + playerz.getXCoOrd() + " Y: " + playerz.getYCoOrd());
                 playerz.button.setBounds(playerz.getXCoOrd(), playerz.getYCoOrd(), 50, 50);
                 if(playerz.addedButton == false)
                 {
@@ -262,7 +329,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
         for(Entity e : thingsToRemove)
         {
             entities.remove(e);
-        }
+        }*/
     }
     
     public void setupLoginForm(boolean bool)
@@ -297,6 +364,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             addMouseListener(this);
             timeStamp = System.currentTimeMillis();
             threadPool.scheduleAtFixedRate(new NetworkCommunicationThread("ping " + player.getName(), this), 0, 20, TimeUnit.SECONDS);
+            threadPool.scheduleAtFixedRate(new NetworkCommunicationThread("movingentities " + player.getName(), this), 0, 30, TimeUnit.MILLISECONDS);
             /*NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
             Thread thread = new Thread(netThread);
             thread.start();
@@ -330,6 +398,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             Thread.yield();
         }
         resultLabel.setText(netThread.resultFromServer);
+         drawPanel.repaint();
         // TODO add your handling code here:
     }//GEN-LAST:event_registerButtonActionPerformed
 
@@ -348,6 +417,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
         {
             Thread.yield();
         }
+         drawPanel.repaint();
         
         
         
@@ -358,6 +428,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
         if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
             btnSendActionPerformed(null);
         }
+         drawPanel.repaint();
     }//GEN-LAST:event_txtMessageKeyPressed
 
     private void passwordTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordTextFieldKeyPressed
@@ -365,6 +436,7 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
         if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
             loginButtonActionPerformed(null);
         }
+         drawPanel.repaint();
     }//GEN-LAST:event_passwordTextFieldKeyPressed
 
     
@@ -442,18 +514,10 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                 NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
-                while(thread.isAlive())
-                {
-                    Thread.yield();
-                }
-                /*NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
-                Thread threadOtherPlayers = new Thread(netThreadOtherPlayers);
-                threadOtherPlayers.start();*/
                 if (!player.isPlayerLoggedIn())
                 {
                     setupLoginForm(true);
                 }
-                //playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
         else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
@@ -464,18 +528,10 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                 NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
-                while(thread.isAlive())
-                {
-                    Thread.yield();
-                }
-                /*NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
-                Thread threadOtherPlayers = new Thread(netThreadOtherPlayers);
-                threadOtherPlayers.start();*/
                 if (!player.isPlayerLoggedIn())
                 {
                     setupLoginForm(true);
                 }
-                //playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
         else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
@@ -486,18 +542,10 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                 NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
-                while(thread.isAlive())
-                {
-                    Thread.yield();
-                }
-                /*NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
-                Thread threadOtherPlayers = new Thread(netThreadOtherPlayers);
-                threadOtherPlayers.start();*/
                 if (!player.isPlayerLoggedIn())
                 {
                     setupLoginForm(true);
                 }
-                //playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
         else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
@@ -508,20 +556,13 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
                 NetworkCommunicationThread netThread = new NetworkCommunicationThread("move " + player.getName() + " " + player.getXCoOrd() + " " + player.getYCoOrd(), this);
                 Thread thread = new Thread(netThread);
                 thread.start();
-                while(thread.isAlive())
-                {
-                    Thread.yield();
-                }
-                /*NetworkCommunicationThread netThreadOtherPlayers = new NetworkCommunicationThread("otherplayers", this);
-                Thread threadOtherPlayers = new Thread(netThreadOtherPlayers);
-                threadOtherPlayers.start();*/
                 if (!player.isPlayerLoggedIn())
                 {
                     setupLoginForm(true);
                 }
-                //playerButton.setBounds(player.getXCoOrd(), player.getYCoOrd(), 50, 50);
             }            
         }
+         drawPanel.repaint();
     }
 
     @Override
@@ -542,7 +583,8 @@ public class MainJFrame extends javax.swing.JFrame implements ActionListener, Ke
             Bullet bullet = new Bullet("bullet", new JButton("."),player,player.getXCoOrd(),player.getYCoOrd(),e.getX(),e.getY());
             entities.add(bullet);
             createPlayerButtons();
-        }        
+        }
+         drawPanel.repaint();
     }
 
     @Override
